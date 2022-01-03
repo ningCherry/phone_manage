@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    body {
+            background-color: #eee;
+            <!--background-image: url(..img/demo.jpg);-->
+        }
+</head>
+<body>
+    <p>hhhhhhhhhhhh</p>
+
+
+    <ul>
+        333
+        {% for user in users %}
+        <li>{{user.username}}--{{user.password}}</li>
+        {%endfor%}
+    </ul>
+
+    <!--<form>-->
+        <!--<span>-->
+            <!--用户名：<input type="text" name="用户名" placeholder="请输入用户名">-->
+        <!--</span>-->
+        <!--<br>-->
+        <!--<span>-->
+            <!--密码：<input type="text" name="密码" placeholder="请输入密码">-->
+        <!--</span>-->
+        <!--<br>-->
+        <!--<span>-->
+            <!--<input type="submit" name="注册">-->
+        <!--</span>-->
+    <!--</form>-->
+
+
+</body>
+</html>

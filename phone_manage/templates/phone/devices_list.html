@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Project</title>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+    <script src="../static/js/jquery-1.11.1.min.js">
+    </script>
+    <script src="../static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../static/js/pageDeal.js"></script>
+    <link rel="stylesheet" href="../static/frame/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/frame/static/css/style.css">
+
+    <style type="text/css">
+         /*必填项前加红色星号*/
+        .form-group.required .control-label:before {
+        color: red;
+        content: "*";
+        position: absolute;
+        margin-left: -7px;
+    }
+    </style>
+
+</head>
+<body role="document">
+    <!--搜索栏-->
+    <div>
+        <form class="navbar-form" method="GET" action="/search" style="float:left; margin-block: auto;">
+            <div class="form-group">
+                <select id="q_center_name" name="q_center_name" class="form-control" type="search" placeholder="请选择中心">
+
+                    <option value = "" selected>全部中心</option>
+                    <option>一中心</option>
+                    <option>二中心</option>
+                    <option>三中心</option>
+                    <option>平台研发中心</option>
+
+                </select>
+                <input name="q_device_name" class="form-control" type="search" placeholder="请输入设备名称"
+                       value={{devices_dic.device_name}}>
+                <select id="q_device_system" name="q_device_system" class="form-control" type="search" placeholder="请输入系统">
+                    <option value="" selected>全部系统</option>
+                    <option>安卓</option>
+                    <option>ios</option>
+                    <option>鸿蒙</option>
+                </select>
+                <input name="q_device_factory" class="form-control" type="search" placeholder="请输入设备厂商" value={{devices_dic.device_factory}}>
+                <input name="q_device_system_version" class="form-control" type="search" placeholder="请输入系统版本" value={{devices_dic.device_system_version}}>
+                <input name="q_device_asset_number" class="form-control" type="search" placeholder="请输入资产编号" value={{devices_dic.device_asset_number}}>
+                <input name="q_device_phone_number" class="form-control" type="search" placeholder="请输入手机号码" value={{devices_dic.device_phone_number}}>
+                <input name="q_device_recipient" class="form-control" type="search" placeholder="请输入出库领取人" value={{devices_dic.device_recipient}}>
+                <input name="q_device_user" class="form-control" type="search" placeholder="请输入使用人" value={{devices_dic.device_user}}>
+                <button id="btn4" type="submit" class="layui-btn" style="margin-top: 2px; margin-left: 5px;">搜索</button>
+            </div>
+            {% csrf_token %}
+        </form>
+    </div>
+
+    <div>
+        <!--<button type="button" class="layui-btn" id="test1">-->
+            <!--<i class="layui-icon">&#xe67c;</i>上传-->
+        <!--</button>-->
+
+        <form action="/upload_device/" method="post" enctype="multipart/form-data" style="padding: 10px 10px;">
+            {% csrf_token %}
+            <input type="file" style="float:left; margin-left: 5px;margin-bottom: 5px;margin-top: 5px;" name="file" id="filename" required>
+            <button class="layui-btn btn" style="float:left;margin-left: 5px; margin-right: 5px;" type="submit">上传 </button>
+        </form>
+
+
+        <a href="/export_excel/">
+            <button type="button" class="layui-btn btn" >导出数据</button>
+        </a>
+
+
+        <a href="/file_down">
+            <button type="button" class="layui-btn btn">下载模板</button>
+        </a>
+
+        <!--模态框-->
+        <button id="btn_add" class="layui-btn btn " data-toggle="modal"
+                data-target="#addMyModal" onclick="get_name()"
+                style="float: right;margin-right: 10px;margin-bottom: 10px;margin-top: 10px;">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>添加
+        </button>
+
+
+        <button style="float:right; margin-right: 10px;margin-bottom: 10px;margin-top: 10px;" id="reset_search"
+                class="layui-btn" text-align="center" onclick="request_home_page()">重置
+        </button>
+    </div>
+
+
+    <div>
+        <table id="table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>所属中心</th>
+                        <th>设备名称</th>
+                        <th>设备系统</th>
+                        <th>厂商</th>
+                        <th>系统版本</th>
+                        <th>资产编号</th>
+                        <th>手机号码</th>
+                        <th>出库领取人</th>
+                        <th>使用人</th>
+                        <th>查看</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for device in devices %}
+                    <tr>
+                        <td titlevalue="序号" style="width: 50px;">{{ forloop.counter}}</td>
+                        <td titlevalue="所属中心">{{ device.center_name }}</td>
+                        <td titlevalue="设备名称">{{ device.device_name }}</td>
+                        <td titlevalue="设备系统">{{ device.device_system }}</td>
+                        <td titlevalue="厂商">{{ device.device_factory }}</td>
+                        <td titlevalue="系统版本">{{ device.device_system_version }}</td>
+                        <td titlevalue="资产编号">{{ device.device_asset_num }}</td>
+                        <td titlevalue="手机号码">{{ device.device_phone_num }}</td>
+                        <td titlevalue="出库领取人">{{ device.device_recipient }}</td>
+                        <td titlevalue="使用人">{{ device.device_user }}</td>
+                        <td titlevalue="查看">
+                            <a href="/detail/{{device.id}}" style="color:blue">详情</a>
+                            <a href="/handover_record/{{device.id}}" style="color:blue">流转记录</a>
+                        </td>
+                        <td titlevalue="操作">
+                            <button id="btn_update" class="layui-btn btn " data-toggle="modal"
+                                    data-target="#updateMyModal"
+                                    onclick="GetPrev({{device.id}});get_name()">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>修改
+                            </button>
+                            <button id="btn_handover" class="layui-btn btn " data-toggle="modal"
+                                    data-target="#HandoverMyModal"
+                                    onclick="GetPrev({{device.id}});get_name()">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>流转
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+        </table>
+    </div>
+
+    <!--新增-->
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="addMyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width:400px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">新增设备</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" method='POST' action="/device_add/" enctype="multipart/form-data">
+                        <div class="form-group" >
+                            <label for="center_name">中心名称</label>
+                            <select data-placeholder="请选择中心名称" class="form-control" name="center_name"
+                                    id="center_name">
+                                <option value="一中心">一中心</option>
+                                <option value="二中心">二中心</option>
+                                <option value="三中心">三中心</option>
+                                <option value="平台研发中心">平台研发中心</option>
+                            </select>
+                        </div>
+                         {# 给class属性增加 required #}
+                        <div class="form-group required">
+                            <label for="device_name" class="control-label">设备名称</label>
+                            <input type="text" class="form-control" name="device_name" placeholder="请输入设备名称" required>  {# 增加 required 属性，必填 #}
+                        </div>
+                    <div class="form-group">
+                        <label for="device_system" >设备系统</label>
+                        <select data-placeholder="选择设备系统" class="form-control" name="device_system"
+                                id="device_system">
+                            <option value="安卓">安卓</option>
+                            <option value="ios">ios</option>
+                            <option value="鸿蒙">鸿蒙</option>
+                        </select>
+                    </div>
+                    <div class="form-group required">
+                        <label for="device_factory" class="control-label">设备厂商</label>
+                        <input type="text" class="form-control" name="device_factory" placeholder="请输入设备厂商" required>
+                    </div>
+                    <div class="form-group required">
+                        <label for="device_system_version" class="control-label">系统版本</label>
+                        <input type="text" class="form-control" name="device_system_version" placeholder="请输入系统版本" required>
+                    </div>
+                    <div class="form-group required">
+                        <label for="device_asset_number" class="control-label">资产编号</label>
+                        <input type="text" class="form-control" name="device_asset_number" placeholder="请输入资产编号" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="device_phone_number">手机号码</label>
+                        <input type="text" class="form-control" name="device_phone_number" placeholder="请输入手机号码">
+                    </div>
+                    <div class="form-group required">
+                        <label for="device_recipient" class="control-label">出库领取人</label>
+                        <input type="text" class="form-control" name="device_recipient" required placeholder="请输入出库领取人">
+                    </div>
+                    <div class="form-group required">
+                        <label for="device_user" class="control-label">使用人</label>
+                        <input type="text" class="form-control" name="device_user" required placeholder="使用人">
+                    </div>
+                    <div class="form-group">
+                        <label for="creator">记录人</label>
+                        <input id="creator" type="text" class="form-control" name="creator" placeholder="请输入记录人" readonly="true"> {# readonly 属性规定输入字段为只读。 #}
+                    </div>
+                    <div class="form-group">
+                        <label for="device_img">关于手机照片</label>
+                        <input type="file" class="form-control" name="device_img"
+                               onchange="verificationPicFile(this)">图片大小不能超过2M
+                    </div>
+                    <div class="form-group">
+                        <label for="asset_img">资产编号照片</label>
+                        <input type="file" class="form-control" name="asset_img"
+                               onchange="verificationPicFile(this)">图片大小不能超过2M
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn layui-btn" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn layui-btn">提交</button>
+                    </div>
+                </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+
+    <!--修改-->
+    <div class="modal fade" id="updateMyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" style="max-width:400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel2">
+                    修改设备
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" method='POST' action="/device_update/" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="device_id">ID编号</label>
+                        <input id=u_device_id type="text" value="" class="form-control" name="u_device_id"
+                               placeholder="请输入ID编号"
+                               required
+                               lay-verify="required" readonly="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="u_center_name">中心名称</label>
+                        <select id="u_center_name" name="u_center_name" class="form-control" type="search"
+                                placeholder="请输入系统">
+                            {% if u_center_name is None %}
+                            <option value="">请输入中心名称</option>
+                            <option>一中心</option>
+                            <option>二中心</option>
+                            <option>三中心</option>
+                            <option>平台研发中心</option>
+                            {% elif u_center_name == "一中心" %}
+                            <option selected>一中心</option>
+                            <option>二中心</option>
+                            <option>三中心</option>
+                            <option>平台研发中心</option>
+                            {% elif u_center_name == "二中心" %}
+                            <option>一中心</option>
+                            <option selected>二中心</option>
+                            <option>三中心</option>
+                            <option>平台研发中心</option>
+                            {% elif u_center_name == "三中心" %}
+                            <option>一中心</option>
+                            <option>二中心</option>
+                            <option selected>三中心</option>
+                            <option>平台研发中心</option>
+                            {% elif u_center_name == "平台研发中心" %}
+                            <option>一中心</option>
+                            <option>二中心</option>
+                            <option>三中心</option>
+                            <option selected>平台研发中心</option>
+                            {%endif%}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="device_name">设备名称</label>
+                        <input id=u_device_name type="text" value="" class="form-control" name="u_device_name"
+                               placeholder="请输入设备名称"
+                               required
+                               lay-verify="required">
+                    </div>
+                    <div class="form-group">
+                        <label for="device_system">设备系统</label>
+                        <select id="u_device_system" name="u_device_system" class="form-control" type="search"
+                                placeholder="请输入系统">
+                            {% if u_device_system is None %}
+                            <option value="">请输入设备系统</option>
+                            <option>安卓</option>
+                            <option>ios</option>
+                            <option>鸿蒙</option>
+                            {% elif u_device_system == "安卓" %}
+                            <option selected>安卓</option>
+                            <option>ios</option>
+                            <option>鸿蒙</option>
+                            {% elif u_device_system == "ios" %}
+                            <option>安卓</option>
+                            <option selected>ios</option>
+                            <option>鸿蒙</option>
+                            {% elif u_device_system == "鸿蒙" %}
+                            <option>安卓</option>
+                            <option>ios</option>
+                            <option selected>鸿蒙</option>
+                            {%endif%}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="device_factory">设备厂商</label>
+                        <input id="u_device_factory" type="text" value="" class="form-control"
+                               name="u_device_factory"
+                               placeholder="请输入设备厂商" required
+                               lay-verify="required">
+                    </div>
+                    <div class="form-group">
+                        <label for="device_system_version">设备系统</label>
+                        <input id="u_device_system_version" type="text" value="" class="form-control"
+                               name="u_device_system_version"
+                               placeholder="请输入设备系统" required
+                               lay-verify="required">
+                    </div>
+                    <div class="form-group">
+                        <label for="device_assert_number">资产编号</label>
+                        <input id="u_device_asset_number" type="text" value="" class="form-control"
+                               name="u_device_asset_number" readonly="true"
+                               placeholder="请输入设备资产编号"
+                               required
+                               lay-verify="required">
+                    </div>
+                    <div class="form-group">
+                        <label for="device_phone_number">手机号码</label>
+                        <input id="u_device_phone_number" type="text" value="" class="form-control"
+                               name="u_device_phone_number"
+                               placeholder="请输入手机号码">
+                    </div>
+                    <div class="form-group">
+                        <label for="device_recipient">出库领取人</label>
+                        <input id="u_device_recipient" type="text" value="" class="form-control"
+                               name="u_device_recipient"
+                               placeholder="请输入出库领取人">
+                    </div>
+                    <div class="form-group">
+                        <label for="creator">修改人</label>
+                        <input id="u_creator" type="text" class="form-control" name="u_creator"
+                               placeholder="请输入修改人" readonly="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="device_img">关于手机照片</label>
+                        <input type="file" class="form-control" name="device_img"
+                               onchange="verificationPicFile(this)">图片大小不能超过2M
+                    </div>
+                    <div class="form-group">
+                        <label for="asset_img">资产编号照片</label>
+                        <input type="file" class="form-control" name="asset_img"
+                               onchange="verificationPicFile(this)">图片大小不能超过2M
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn layui-btn" data-dismiss="modal">关闭
+                        </button>
+                        <button type="submit" class="layui-btn btn ">
+                            提交
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+    <!--流转-->
+    <div class="modal fade" id="HandoverMyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" style="max-width:400px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel3">
+                        设备流转
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" method='POST' action="/handover/" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="device_id">ID编号</label>
+                            <input id="h_device_id" type="text" value="" class="form-control" name="h_device_id"
+                                   placeholder="请输入ID编号"
+                                   required
+                                   lay-verify="required" readonly="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="device_user">使用人</label>
+                            <input type="text" class="form-control" name="device_user" placeholder="使用人">
+                        </div>
+                        <div class="form-group">
+                            <label for="handover_reason">流转原因</label>
+                            <select id="handover_reason" name="handover_reason" class="form-control" type="search"
+                                    placeholder="请输入流转原因">
+                                <option value="分配">分配</option>
+                                <option value="转移">转移</option>
+                                <option value="外借">外借</option>
+                                <option value="离职">离职</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="handover_creator">记录人</label>
+                            <input id="handover_creator" type="text" class="form-control" name="handover_creator"
+                                   placeholder="请输入记录人" readonly="true">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn layui-btn" data-dismiss="modal">关闭
+                            </button>
+                            <button type="submit" class="btn layui-btn">
+                                提交
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+<script type="text/javascript" src="../static/frame/layui/layui.js"></script>
+<script type="text/javascript" src="../static/frame/static/js/vip_comm.js"></script>
+<script type="text/javascript" src="../static/DataTables/DataTables-1.11.2/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="../static/DataTables/DataTables-1.11.2/js/dataTables.bootstrap.min.js"></script>
+
+
+<script type="text/javascript">
+    function get_name(name) {
+        var creator = localStorage.name;
+        $("#creator").val(creator);
+        $("#u_creator").val(creator);
+        $("#handover_creator").val(creator)
+    }
+
+    layui.use('upload', function(){
+        var upload = layui.upload;
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#test1' //绑定元素
+            ,url: '/upload/' //上传接口
+            ,done: function(res){
+              //上传完毕回调
+            }
+            ,error: function(){
+              //请求异常回调
+            }
+        });
+    });
+
+
+    function verificationPicFile(file) {
+        var fileSize = 0;
+        var fileMaxSize = 1024;//1M
+        var filePath = file.value;
+        if (filePath) {
+            fileSize = file.files[0].size;
+            var size = fileSize / 2048;
+                if (size > fileMaxSize) {
+                    alert("图片大小不能大于2M！");
+                    file.value = "";
+                    return false;
+                } else if (size <= 0) {
+                    alert("图片大小不能为0M！");
+                    file.value = "";
+                    return false;
+                }
+        } else {
+                return false;
+        }
+    }
+
+    // ajax交互，反显修改页的数据
+    function GetPrev(arg) {
+        console.log(arg)
+        $.ajax({
+            // 后端程序的url地址
+            url: '/get_device_by_id',
+            // 也可以使用method，提交数据的方式，默认是'GET'，常用的还有'POST'
+            type: 'POST',
+            dataType: 'json',  // 返回的数据格式，常用的有是'json','html',"jsonp"
+            data: {
+                "id": arg
+            }
+        })
+            .done(function (resp) {     // 请求成功以后的操作
+                console.log(resp);
+                $("#u_device_id").val(resp["device_id"]);
+                $("#u_center_name").val(resp["center_name"]);
+                $("#h_device_id").val(resp["device_id"]);
+                $("#u_device_name").val(resp["device_name"]);
+                $("#u_device_system").val(resp["device_system"]);
+                $("#u_device_factory").val(resp["device_factory"]);
+                $("#u_device_system_version").val(resp["device_system_version"]);
+                $("#u_device_asset_number").val(resp["device_asset_number"]);
+                $("#u_device_phone_number").val(resp["device_phone_number"]);
+                $("#u_device_recipient").val(resp["device_recipient"]);
+                $("#u_device_user").val(resp["device_user"]);
+                $("#device_img").val(resp["device_img"]);
+                $("#asset_img").val(resp["asset_img"]);
+            })
+            .fail(function (error) {    // 请求失败以后的操作
+                console.log(error);
+            });
+    }
+
+
+    function request_home_page() {
+      console.log("触发重置")
+      console.log(location.host)
+      host = "http://" + location.host + "/devices_list"
+      window.location.href = host;
+   }
+
+
+    $('#table').DataTable({
+        autoWidth:true,////不开启自动宽度，用bootstrap的自适应去调整
+        "lengthMenu": [10, 20, 50, 100],//表格行数选择框内数目 显示2条,4条,20条,50条
+        "displayLength": 10,//默认的显示行数 (也就是每页显示几条数据)
+        searching : false, //去掉搜索框方法一：百度上的方法，但是我用这没管用
+        bLengthChange: false,   //去掉每页显示多少条数据方法
+        "order": [],
+        "language": {//自定义语言提示
+            "processing": "处理中...",
+            "lengthMenu": "显示 _MENU_ 项结果",
+            "zeroRecords": "没有找到相应的结果",
+            "info": "第 _START_ 至 _END_ 行，共 _TOTAL_ 行",
+            "infoEmpty": "第 0 至 0 项结果，共 0 项",
+            "infoFiltered": "(由 _MAX_ 项结果过滤)",
+            "infoPostFix": "",
+            "url": "",
+            "thousands": "'",
+            "emptyTable": "表中数据为空",
+            "loadingRecords": "载入中...",
+            "infoThousands": ",",
+            "paginate": {
+                "first": "首页",
+                "previous": "上一页",
+                "next": "下一页",
+                "last": "末页"
+            }
+        }
+    });
+
+
+var gradeval = localStorage.getItem("discountGradeVal");
+    if(gradeval) {
+        $(".discountSelect option").eq(gradeval).prop('selected', true);
+    }
+
+    $(".discountSelect").change(function(){
+        var discountGradeVal = $(".discountSelect").find("option:selected").index();
+        localStorage.setItem("discountGradeVal",discountGradeVal);
+    });
+
+</script>
+
+{% if messages %}
+    <script>
+        {% for msg in messages %}
+            alert('{{ msg.message }}');
+        {% endfor %}
+    </script>
+{% endif %}
+
+</body>
+</html>

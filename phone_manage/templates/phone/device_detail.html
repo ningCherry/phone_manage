@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css">
+    <script src="../../static/bootstrap/js/bootstrap.min.js"></script>
+
+</head>
+<body role="document">
+
+<div style="margin:auto;">
+    <label>
+        <a style="color:blue" href="/devices_list">返回设备列表</a>
+    </label>
+</div>
+
+{% if device %}
+<h3>设备详情</h3>
+
+<table>
+    <tr>
+        {% if device.device_img %}
+        {% load static %}
+        <td><img style="width: 300px;height: 450px" src="{{ device.device_img}}" ></td>
+        {% else %}
+        <td><img style="width: 300px;height: 450px" lazyload="true"
+                 src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2759090932,2861722785&fm=224&gp=0.jpg" />
+        </td>
+
+        <!--E:/python_practice_ku/phone_manage/ph_manage/upload/img/tesseracttest.jpg-->
+        {% endif %}
+        {% if device.asser_img %}
+        <td><img style="width: 300px;height: 450px" src="{{ device.asser_img}}"/></td>
+        {% else %}
+        <td><img style="width: 300px;height: 450px" lazyload="true"
+                 src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2759090932,2861722785&fm=224&gp=0.jpg" />
+        </td>
+        {% endif %}
+        <td>
+            <font style="margin-left: 12px " size="5px">所属中心:{{device.center_name}}</font>
+            <br>
+            <font style="margin-left: 12px " size="5px">设备名称:{{device.device_name}}</font>
+            <br>
+            <font style=" margin-left: 12px " size="5px">设备系统:{{device.device_system}}</font>
+            <br>
+            <font style=" margin-left: 12px " size="5px">厂商:{{device.device_factory}}</font>
+            <br>
+            <font style=" margin-left: 12px" size="5px">系统版本:{{device.device_system_version}}</font>
+            <br>
+            <font style=" margin-left: 12px " size="5px">资产编号:{{device.device_asset_num}}</font>
+            <br>
+            <font style="margin-left: 12px" size="5px">手机号码:{{device.device_phone_num}}</font>
+            <br>
+            <font style=" margin-left: 12px " size="5px">出库领取人:{{device.device_recipient}}</font>
+            <br>
+            <font style=" margin-left: 12px" size="5px">使用人:{{device.device_user}}</font>
+            <br>
+            <font style="margin-left: 12px " size="5px">创建人:{{device.creator}}</font>
+            <br>
+            <font style="margin-left: 12px" size="5px">创建日期:{{device.create_date|date:"Y-m-d H:i:s" }}</font>
+            <br>
+            <font style=" margin-left: 12px " size="5px">修改时间:{{device.update_data|date:"Y-m-d H:i:s" }}</font>
+        </td>
+        {% endif %}
+    </tr>
+</table>
+
+
+</body>
+</html>
+
+
+

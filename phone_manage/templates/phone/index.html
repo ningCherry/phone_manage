@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Login-设备管理平台</title>
+    <script>
+        if (window != window.top) top.location.href = self.location.href;
+    </script>
+    <link href="../static/plugins/layui2/css/layui.css" rel="stylesheet"/>
+    <link href="../static/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <link href="../static/css/login.css" rel="stylesheet"/>
+    <link href="../static/plugins/sideshow/css/normalize.css" rel="stylesheet"/>
+    <link href="../static/plugins/sideshow/css/demo.css" rel="stylesheet"/>
+    <link href="../static/plugins/sideshow/css/component.css" rel="stylesheet"/>
+    <!--[if IE]>
+    <script src="../static/plugins/sideshow/js/html5.js"></script>
+    <![endif]-->
+    <style>
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0px 1000px #303030 inset;
+        }
+
+        canvas {
+            position: absolute;
+            z-index: -1;
+        }
+
+        .kit-login-box header h1 {
+            line-height: normal;
+        }
+
+        .kit-login-box header {
+            height: auto;
+        }
+
+        .content {
+            position: relative;
+        }
+
+        .codrops-demos {
+            position: absolute;
+            bottom: 0;
+            left: 40%;
+            z-index: 10;
+        }
+
+        .codrops-demos a {
+            border: 2px solid rgba(242, 242, 242, 0.41);
+            color: rgba(255, 255, 255, 0.51);
+        }
+
+        .kit-pull-right button,
+        .kit-login-main .layui-form-item input {
+            background-color: transparent;
+            color: white;
+        }
+
+        .kit-login-main .layui-form-item input::-webkit-input-placeholder {
+            color: white;
+        }
+
+        .kit-login-main .layui-form-item input:-moz-placeholder {
+            color: white;
+        }
+
+        .kit-login-main .layui-form-item input::-moz-placeholder {
+            color: white;
+        }
+
+        .kit-login-main .layui-form-item input:-ms-input-placeholder {
+            color: white;
+        }
+
+        .kit-pull-right button:hover {
+            border-color: #009688;
+            color: #009688
+        }
+
+
+        .kit-pull-left button,
+        .kit-login-main .layui-form-item input {
+            background-color: transparent;
+            color: white;
+        }
+
+        .kit-login-main .layui-form-item input::-webkit-input-placeholder {
+            color: white;
+        }
+
+        .kit-login-main .layui-form-item input:-moz-placeholder {
+            color: white;
+        }
+
+        .kit-login-main .layui-form-item input::-moz-placeholder {
+            color: white;
+        }
+
+        .kit-login-main .layui-form-item input:-ms-input-placeholder {
+            color: white;
+        }
+
+        .kit-pull-left button:hover {
+            border-color: #009688;
+            color: #009688
+        }
+
+        from-color
+
+
+    </style>
+</head>
+
+<body class="kit-login-bg">
+<div class="container demo-1">
+    <div class="content">
+        <div id="large-header" class="large-header">
+            <canvas id="demo-canvas"></canvas>
+            <div class="kit-login-box">
+                <header>
+                    <h1>设备管理平台</h1>
+                </header>
+                <div class="kit-login-main">
+                    <form action="/login_action/" class="layui-form from-color" method="post">
+                        <div class="layui-form-item">
+                            <label class="kit-login-icon">
+                                <i class="layui-icon">&#xe612;</i>
+                            </label>
+                            <input type="text" name="form-username" placeholder="Username..." autocomplete="on"
+                                   id="form-username" class="layui-input" value={{name}}>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="kit-login-icon">
+                                <i class="layui-icon">&#xe673;</i>
+                            </label>
+                            <input type="password" name="form-password" placeholder="Password..." class="layui-input"
+                                   id="form-password">
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="kit-pull-left">
+                                <button class="layui-btn layui-btn-primary" lay-submit11 lay-filter="qqq">
+                                    <i class="fa fa-sign-in" aria-hidden="true"></i> 注册
+                                </button>
+                            </div>
+                            <div class="kit-pull-right">
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="login">
+                                    <i class="fa fa-sign-in" aria-hidden="true"></i> 登入
+                                </button>
+                            </div>
+                            <!--                            <div class="kit-clear"></div>-->
+                        </div>
+                        <font color="red">
+                            {{error}}
+                        </font>
+                        {% csrf_token %}
+                    </form>
+                </div>
+                <footer>
+                    <p>mobile device management platform © <a style="color:white; font-size:18px;" target="_blank">tester</a>
+                    </p>
+                </footer>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /container -->
+<script src="../static/plugins/jquery.js"></script>
+<script src="../static/plugins/layui2/layui.js"></script>
+<script src="../static/plugins/sideshow/js/TweenLite.min.js"></script>
+<script src="../static/plugins/sideshow/js/EasePack.min.js"></script>
+<script src="../static/plugins/sideshow/js/rAF.js"></script>
+<script src="../static/plugins/sideshow/js/demo-1.js"></script>
+<script>
+    function set_name(name) {
+        localStorage.setItem("name", name);
+    }
+</script>
+</body>
+
+</html>
+
